@@ -3,7 +3,7 @@ import { ContactAndMapsSection } from '../components/ContactAndMapsSection';
 import { ConsultantProfile } from '../types/portfolio';
 import { MotionReveal } from '../components/MotionReveal';
 import { PageId } from '../components/Navbar';
-import { ArrowLeft, MapPin, Building, Mail, Phone, Clock, Sparkles } from 'lucide-react';
+import { ArrowLeft, Building, Sparkles } from 'lucide-react';
 import { DELOITTE_OFFICES } from '../data/defaultPortfolio';
 
 interface ContactPageProps {
@@ -14,9 +14,10 @@ interface ContactPageProps {
 export const ContactPage: React.FC<ContactPageProps> = ({ profile, onNavigate }) => {
   return (
     <div className="pt-28 pb-20 space-y-12 relative overflow-hidden">
-      {/* Background Ambient Refraction Orbs */}
-      <div className="absolute top-20 right-10 w-96 h-96 bg-[#86bc25]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-4 w-96 h-96 bg-[#00a3e0]/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Background Ambient Refraction Orbs — luminous for frosted glass */}
+      <div className="absolute top-20 right-10 w-[28rem] h-[28rem] bg-[#86bc25]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-4 w-[28rem] h-[28rem] bg-[#00a3e0]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="glass-atmosphere absolute inset-0 pointer-events-none opacity-50" />
 
       {/* Page Hero Header in Frosted Glass */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left relative z-10">
