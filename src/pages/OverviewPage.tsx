@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HeroSection } from '../components/HeroSection';
 import { ConsultantProfile, ExperienceItem, ProjectItem } from '../types/portfolio';
 import { MotionReveal } from '../components/MotionReveal';
 import { PageId } from '../components/Navbar';
-import { ArrowRight, Award, CheckCircle2, ChevronRight, Layers, Users, TrendingUp, ShieldCheck, Sparkles, Droplets } from 'lucide-react';
+import { ProjectDetailModal } from '../components/ProjectDetailModal';
+import { CaseStudyImage } from '../components/CaseStudyImage';
+import { ArrowRight, Award, CheckCircle2, ChevronRight, Layers, Users, TrendingUp, ShieldCheck, Sparkles } from 'lucide-react';
 
 interface OverviewPageProps {
   profile: ConsultantProfile;
@@ -22,6 +24,8 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   onExportPDF,
   isExportingPDF = false,
 }) => {
+  const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
+
   return (
     <div className="space-y-16 pb-20 relative overflow-hidden">
       {/* Background Ambient Refraction Orbs */}
@@ -181,19 +185,20 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {projects.map((proj, idx) => (
             <MotionReveal key={proj.id} delay={idx * 0.1} direction="up" distance={20}>
-              <div
-                onClick={() => onNavigate('projects')}
-                className="p-5 rounded-3xl frosted-glass text-left space-y-4 hover:-translate-y-1 transition-all cursor-pointer group"
+              <button
+                type="button"
+                onClick={() => setActiveProject(proj)}
+                className="w-full text-left p-5 rounded-3xl frosted-glass space-y-4 hover:-translate-y-1 transition-all cursor-pointer group"
               >
-                <div className="relative aspect-video rounded-2xl overflow-hidden bg-black border border-white/10">
-                  <img
+                <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
+                  <CaseStudyImage
                     src={proj.heroImage}
                     alt={proj.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="absolute inset-0 w-full h-full"
+                    imgClassName="group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
-                  <span className="absolute bottom-2 left-2 text-[10px] font-semibold text-white/95 frosted-glass-inset px-2.5 py-0.5 rounded-full">
+                  <div className="absolute inset-0 z-[2] bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                  <span className="absolute bottom-2 left-2 z-[3] text-[10px] font-semibold text-white frosted-glass-inset px-2.5 py-0.5 rounded-full">
                     {proj.clientIndustry}
                   </span>
                 </div>
@@ -214,7 +219,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
                     <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
-              </div>
+              </button>
             </MotionReveal>
           ))}
         </div>
@@ -284,6 +289,11 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
           </div>
         </div>
       </section>
+
+      <ProjectDetailModal
+        project={activeProject}
+        onClose={() => setActiveProject(null)}
+      />
     </div>
   );
 };

@@ -1,5 +1,8 @@
 import { ConsultantProfile, ExperienceItem, ProjectItem, SkillItem, OfficeLocation } from '../types/portfolio';
 import dikshaAvatar from '../assets/images/diksha_profile_alpine_square.jpg';
+import caseServicenowKm from '../assets/images/case_servicenow_km.jpg';
+import caseSabaLearning from '../assets/images/case_saba_learning.jpg';
+import casePricingNpa from '../assets/images/case_pricing_npa.jpg';
 
 export const DEFAULT_PROFILE: ConsultantProfile = {
   name: "Diksha Agarwal",
@@ -259,7 +262,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
     title: "Global ServiceNow Knowledge Base Architecture & Multi-Unit Governance",
     clientIndustry: "Deloitte Global Operations & Canadian Practice",
     category: "servicenow",
-    heroImage: "/src/assets/images/project_health_ai_1790341859114.jpg",
+    heroImage: caseServicenowKm,
     headline: "Architected scalable ServiceNow Knowledge Management structures, trained 300+ professionals, and enabled multiple business units to operate independently under governance.",
     challenge: "Dispersed global business units experienced duplicated knowledge bases, fragmented categorization hierarchies, and lack of standardized User Criteria access controls, leading to inefficient information retrieval and redundant maintenance overhead.",
     solution: "Designed and implemented centralized Knowledge Base architectures with granular User Criteria access models and Knowledge Roles. Established standardized category and subcategory hierarchies, evaluated operational requirements, and drove enterprise adoption through structured instructor-led training.",
@@ -282,7 +285,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
     title: "SABA Interactive Digital Learning Curriculum & MySupport Automation",
     clientIndustry: "Enterprise Learning & Platform Enablement",
     category: "transformation",
-    heroImage: "/src/assets/images/project_cloud_banking_1790341847745.jpg",
+    heroImage: caseSabaLearning,
     headline: "Developed 3-module self-paced learning curriculum on SABA covering MySupport/ServiceNow article lifecycles, projecting 100+ hours in instructor-led training savings.",
     challenge: "Onboarding new professionals to the ServiceNow article publishing lifecycle required continuous, high-touch instructor-led sessions, taking dozens of hours away from core solution architecture and creating support ticket bottlenecks.",
     solution: "Created an interactive 3-module digital training curriculum hosted on SABA, enabling global teams to self-train on authoring, reviewing, publishing, and retiring articles in MySupport. Served as advisor bridging content gaps.",
@@ -305,7 +308,7 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
     title: "Public Pricing Strategic Initiative & NPA Platform Migration",
     clientIndustry: "Deloitte Strategic Pricing & Commercial Operations",
     category: "pricing",
-    heroImage: "/src/assets/images/deloitte_office_campus_1790341870112.jpg",
+    heroImage: casePricingNpa,
     headline: "Led the Public Pricing initiative for several months, driving a 15% team productivity improvement and migrating legacy Excel-based tools to the NPA system.",
     challenge: "Managing public and private pricing reviews across engagement teams relied on disparate Excel calculators, causing review delays, potential charge code inconsistencies, and high turnaround times for Partners.",
     solution: "Led strategic direction for Public Pricing, authored comprehensive reference manuals from initial drafts to final guidance, trained cross-functional teams, assisted Partners with CAEA reviews, and partnered with IT to migrate tools to the NPA platform.",

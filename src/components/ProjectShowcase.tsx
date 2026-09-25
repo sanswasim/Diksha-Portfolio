@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, Download, Loader2, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Download, Loader2 } from 'lucide-react';
 import { ProjectItem } from '../types/portfolio';
 import { ProjectDetailModal } from './ProjectDetailModal';
 import { MotionReveal } from './MotionReveal';
+import { CaseStudyImage } from './CaseStudyImage';
 
 interface ProjectShowcaseProps {
   projects: ProjectItem[];
@@ -114,19 +115,19 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
                   <div
                     className={`relative ${
                       isFeatured ? 'aspect-[21/9] sm:aspect-[24/9]' : 'aspect-video'
-                    } w-full rounded-2xl overflow-hidden bg-black border border-white/10 cursor-pointer`}
+                    } w-full rounded-2xl overflow-hidden border border-white/15 cursor-pointer shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]`}
                     onClick={() => setActiveModalProject(project)}
                   >
-                    <img
+                    <CaseStudyImage
                       src={project.heroImage}
                       alt={project.title}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
+                      className="absolute inset-0 w-full h-full"
+                      imgClassName="transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/80 via-black/25 to-transparent group-hover:opacity-60 transition-opacity" />
+                    <div className="absolute inset-0 z-[2] rounded-2xl bg-gradient-to-t from-black/75 via-black/15 to-transparent group-hover:opacity-70 transition-opacity pointer-events-none" />
 
                     {/* Overlaid Badges */}
-                    <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+                    <div className="absolute top-4 left-4 right-4 z-[3] flex items-center justify-between pointer-events-none">
                       <span className="text-[11px] font-semibold text-white frosted-glass-inset px-3 py-1 rounded-full">
                         {project.clientIndustry}
                       </span>
@@ -136,8 +137,8 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
                       </span>
                     </div>
 
-                    <div className="absolute bottom-4 right-4">
-                      <div className="w-10 h-10 rounded-full water-drop text-white flex items-center justify-center group-hover:bg-[#86bc25] group-hover:text-black transition-colors">
+                    <div className="absolute bottom-4 right-4 z-[3]">
+                      <div className="w-10 h-10 rounded-full water-drop text-white flex items-center justify-center group-hover:scale-110 transition-transform">
                         <ArrowUpRight className="w-4 h-4" />
                       </div>
                     </div>
