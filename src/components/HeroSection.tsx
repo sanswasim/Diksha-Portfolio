@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Download, Sparkles, Building2, MapPin, CheckCircle2, Loader2 } from 'lucide-react';
+import { ArrowRight, Sparkles, Building2, MapPin, CheckCircle2 } from 'lucide-react';
 import { ConsultantProfile } from '../types/portfolio';
 import { MotionReveal } from './MotionReveal';
 import { PageId } from './Navbar';
@@ -9,21 +9,19 @@ import dikshaAvatar from '../assets/images/diksha_profile_alpine_square.jpg';
 interface HeroSectionProps {
   profile: ConsultantProfile;
   onNavigate: (page: PageId) => void;
-  onExportPDF: () => void;
-  isExportingPDF?: boolean;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   profile,
   onNavigate,
-  onExportPDF,
-  isExportingPDF = false,
 }) => {
   return (
     <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 bg-black overflow-hidden">
-      {/* Background radial glow matching the RiskPulse artwork in screenshot */}
-      <div className="absolute top-1/4 right-0 w-[550px] h-[550px] bg-gradient-to-br from-[#86bc25]/10 via-[#00a3e0]/10 to-transparent blur-3xl pointer-events-none rounded-full" />
-      <div className="absolute bottom-10 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-[#002c6c]/20 to-transparent blur-3xl pointer-events-none rounded-full" />
+      {/* Refraction field — gives frosted glass something vivid to blur */}
+      <div className="absolute top-1/4 right-0 w-[620px] h-[620px] bg-gradient-to-br from-[#86bc25]/25 via-[#00a3e0]/20 to-transparent blur-3xl pointer-events-none rounded-full" />
+      <div className="absolute bottom-10 left-0 w-[480px] h-[480px] bg-gradient-to-tr from-[#002c6c]/45 via-[#00a3e0]/15 to-transparent blur-3xl pointer-events-none rounded-full" />
+      <div className="absolute top-1/2 left-1/3 w-[320px] h-[320px] bg-[#86bc25]/10 blur-[100px] pointer-events-none rounded-full" />
+      <div className="glass-atmosphere absolute inset-0 pointer-events-none opacity-60" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
@@ -92,24 +90,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 <button
                   onClick={() => onNavigate('experience')}
-                  className="px-5 py-2.5 rounded-full font-semibold text-xs text-white bg-[#0c1017] hover:bg-[#131924] border border-[#1e2636] hover:border-[#86bc25]/50 transition-all flex items-center gap-2 cursor-pointer"
+                  className="px-5 py-2.5 rounded-full font-semibold text-xs text-white frosted-glass-inset hover:border-[#86bc25]/50 transition-all flex items-center gap-2 cursor-pointer"
                 >
                   <span>Career Trajectory (7+ Yrs)</span>
-                </button>
-
-                {/* Formatted PDF Report Export Button */}
-                <button
-                  onClick={onExportPDF}
-                  disabled={isExportingPDF}
-                  className="px-5 py-2.5 rounded-full font-semibold text-xs text-white bg-[#0c1017] hover:bg-[#131924] border border-[#86bc25]/40 hover:border-[#86bc25] transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
-                  title="Generate & Download Formatted PDF Report via jsPDF"
-                >
-                  {isExportingPDF ? (
-                    <Loader2 className="w-3.5 h-3.5 text-[#86bc25] animate-spin" />
-                  ) : (
-                    <Download className="w-3.5 h-3.5 text-[#86bc25]" />
-                  )}
-                  <span>{isExportingPDF ? 'Generating PDF...' : 'Download Executive Report (PDF)'}</span>
                 </button>
 
                 <button

@@ -9,6 +9,33 @@ export interface ExportPdfOptions {
   projects: ProjectItem[];
 }
 
+const loadImageDataUrl = async (src: string): Promise<string | null> => {
+  try {
+    const res = await fetch(src);
+    if (!res.ok) return null;
+    const blob = await res.blob();
+
+    // Re-encode via canvas at 2x for crisp print/PDF rasterization
+    const bitmap = await createImageBitmap(blob);
+    const maxEdge = 900;
+    const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+    const w = Math.round(bitmap.width * scale);
+    const h = Math.round(bitmap.height * scale);
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    bitmap.close();
+    return canvas.toDataURL('image/jpeg', 0.95);
+  } catch {
+    return null;
+  }
+};
+
 export const generatePortfolioPDF = async ({
   profile,
   experiences,
@@ -19,180 +46,188 @@ export const generatePortfolioPDF = async ({
     orientation: 'portrait',
     unit: 'mm',
     format: 'a4',
+    compress: true,
+    putOnlyUsedFonts: true,
+    floatPrecision: 16,
   });
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 14;
+  const margin = 16;
   const contentWidth = pageWidth - margin * 2;
 
-  // Deloitte Brand Color Palette
-  const colorNavy = [0, 44, 108] as const;      // #002C6C
-  const colorBlue = [0, 85, 143] as const;      // #00558F
-  const colorGreen = [134, 188, 37] as const;   // #86BC25 (Signature Dot)
-  const colorDark = [15, 28, 48] as const;      // #0F1C30
-  const colorMuted = [75, 93, 120] as const;    // #4B5D78
-  const colorLightBg = [240, 244, 250] as const;// #F0F4FA
+  const colorNavy = [0, 44, 108] as const;
+  const colorBlue = [0, 85, 143] as const;
+  const colorCyan = [0, 163, 224] as const;
+  const colorGreen = [134, 188, 37] as const;
+  const colorDark = [15, 28, 48] as const;
+  const colorMuted = [75, 93, 120] as const;
+  const colorLightBg = [244, 247, 252] as const;
   const colorLine = [210, 218, 230] as const;
+  const colorWhite = [255, 255, 255] as const;
+
+  const portraitDataUrl = profile.avatarUrl
+    ? await loadImageDataUrl(profile.avatarUrl)
+    : null;
 
   let currentY = margin;
 
-  // Helper to draw section header
-  const drawSectionHeader = (title: string, yPos: number): number => {
-    // Check page overflow
-    if (yPos > pageHeight - 35) {
+  const ensureSpace = (needed: number): void => {
+    if (currentY > pageHeight - needed) {
       doc.addPage();
-      yPos = margin + 5;
+      currentY = margin + 4;
     }
-
-    doc.setFillColor(...colorNavy);
-    doc.rect(margin, yPos, 3, 6, 'F');
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(...colorNavy);
-    doc.text(title.toUpperCase(), margin + 6, yPos + 4.5);
-
-    // Deloitte signature green dot next to header
-    doc.setFillColor(...colorGreen);
-    const titleWidth = doc.getTextWidth(title.toUpperCase());
-    doc.circle(margin + 6 + titleWidth + 3, yPos + 3.5, 1, 'F');
-
-    // Horizontal hairline rule
-    doc.setDrawColor(...colorLine);
-    doc.setLineWidth(0.3);
-    doc.line(margin + 6 + titleWidth + 6, yPos + 3.5, pageWidth - margin, yPos + 3.5);
-
-    return yPos + 9;
   };
 
-  // -------------------------------------------------------------
-  // PAGE 1: HEADER & EXECUTIVE SUMMARY & CORE STATS & COMPETENCIES
-  // -------------------------------------------------------------
+  const drawSectionHeader = (title: string): void => {
+    ensureSpace(28);
+    doc.setFillColor(...colorNavy);
+    doc.roundedRect(margin, currentY, 3.2, 7, 0.6, 0.6, 'F');
 
-  // Top Deloitte Brand Bar
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(...colorNavy);
+    doc.text(title.toUpperCase(), margin + 6.5, currentY + 5.2);
+
+    const titleWidth = doc.getTextWidth(title.toUpperCase());
+    doc.setFillColor(...colorGreen);
+    doc.circle(margin + 6.5 + titleWidth + 3.2, currentY + 4, 1.15, 'F');
+
+    doc.setDrawColor(...colorLine);
+    doc.setLineWidth(0.35);
+    doc.line(margin + 6.5 + titleWidth + 6.5, currentY + 4, pageWidth - margin, currentY + 4);
+
+    currentY += 12;
+  };
+
+  // ── Cover header band ─────────────────────────────────────────
   doc.setFillColor(...colorNavy);
-  doc.rect(0, 0, pageWidth, 5, 'F');
+  doc.rect(0, 0, pageWidth, 42, 'F');
 
-  // Deloitte Wordmark with green dot
-  currentY = margin + 2;
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(16);
-  doc.setTextColor(...colorNavy);
-  doc.text('Deloitte', margin, currentY);
-
-  // Green Dot
-  const deloitteTextWidth = doc.getTextWidth('Deloitte');
+  // Accent stripe
   doc.setFillColor(...colorGreen);
-  doc.circle(margin + deloitteTextWidth + 1.8, currentY - 1.2, 1.4, 'F');
+  doc.rect(0, 42, pageWidth, 1.6, 'F');
+  doc.setFillColor(...colorCyan);
+  doc.rect(0, 43.6, pageWidth, 0.7, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(...colorWhite);
+  doc.text('Deloitte', margin, 14);
+  const deloitteW = doc.getTextWidth('Deloitte');
+  doc.setFillColor(...colorGreen);
+  doc.circle(margin + deloitteW + 2.2, 12.4, 1.6, 'F');
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
+  doc.setFontSize(9);
+  doc.setTextColor(200, 214, 232);
+  doc.text('Executive Portfolio & Case Study Dossier', margin + deloitteW + 6, 14);
+  doc.text('Offices of US-India', pageWidth - margin, 14, { align: 'right' });
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(22);
+  doc.setTextColor(...colorWhite);
+  doc.text(profile.name, margin, 28);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(186, 210, 232);
+  doc.text(profile.designation, margin, 35.5);
+
+  // Portrait
+  if (portraitDataUrl) {
+    const photoSize = 28;
+    const photoX = pageWidth - margin - photoSize;
+    const photoY = 7;
+    doc.setFillColor(...colorWhite);
+    doc.roundedRect(photoX - 1, photoY - 1, photoSize + 2, photoSize + 2, 2, 2, 'F');
+    doc.addImage(portraitDataUrl, 'JPEG', photoX, photoY, photoSize, photoSize, undefined, 'NONE');
+  }
+
+  currentY = 52;
+
+  // Contact line
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
   doc.setTextColor(...colorMuted);
-  doc.text('|  Executive Portfolio & Case Study Dossier', margin + deloitteTextWidth + 5.5, currentY);
-
-  doc.setFontSize(8);
-  doc.text('Offices of US-India', pageWidth - margin, currentY, { align: 'right' });
-
+  const contactText = `${profile.location}  ·  ${profile.email}  ·  ${profile.linkedin.replace('https://', '')}`;
+  doc.text(contactText, margin, currentY);
   currentY += 8;
 
-  // Candidate Name & Title
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(20);
-  doc.setTextColor(...colorDark);
-  doc.text(profile.name, margin, currentY);
-
-  currentY += 6;
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(11);
-  doc.setTextColor(...colorBlue);
-  doc.text(profile.designation, margin, currentY);
-
-  currentY += 4.5;
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(...colorMuted);
-  const contactText = `${profile.location}  |  ${profile.email}  |  ${profile.linkedin.replace('https://', '')}`;
-  doc.text(contactText, margin, currentY);
-
-  currentY += 7;
-
-  // Stat Highlights Box Strip (4 Metric Cards)
-  const statBoxWidth = (contentWidth - 9) / 4;
-  const statBoxHeight = 16;
+  // Stat cards
   const stats = profile.statHighlights || [];
+  const statBoxWidth = (contentWidth - 9) / 4;
+  const statBoxHeight = 20;
 
   stats.slice(0, 4).forEach((stat, i) => {
     const x = margin + i * (statBoxWidth + 3);
     doc.setFillColor(...colorLightBg);
-    doc.roundedRect(x, currentY, statBoxWidth, statBoxHeight, 2, 2, 'F');
+    doc.roundedRect(x, currentY, statBoxWidth, statBoxHeight, 2.5, 2.5, 'F');
     doc.setDrawColor(...colorLine);
-    doc.roundedRect(x, currentY, statBoxWidth, statBoxHeight, 2, 2, 'S');
+    doc.setLineWidth(0.4);
+    doc.roundedRect(x, currentY, statBoxWidth, statBoxHeight, 2.5, 2.5, 'S');
+
+    // Top accent
+    doc.setFillColor(...colorCyan);
+    doc.roundedRect(x, currentY, statBoxWidth, 1.2, 1, 1, 'F');
 
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
+    doc.setFontSize(13);
     doc.setTextColor(...colorNavy);
-    doc.text(stat.value, x + statBoxWidth / 2, currentY + 5.5, { align: 'center' });
+    doc.text(stat.value, x + statBoxWidth / 2, currentY + 8, { align: 'center' });
 
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
+    doc.setFontSize(7.5);
     doc.setTextColor(...colorDark);
-    doc.text(stat.label, x + statBoxWidth / 2, currentY + 10, { align: 'center' });
+    doc.text(stat.label, x + statBoxWidth / 2, currentY + 13, { align: 'center', maxWidth: statBoxWidth - 4 });
 
     if (stat.subtext) {
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(6);
+      doc.setFontSize(6.5);
       doc.setTextColor(...colorMuted);
-      doc.text(stat.subtext, x + statBoxWidth / 2, currentY + 13.5, { align: 'center' });
+      doc.text(stat.subtext, x + statBoxWidth / 2, currentY + 17, { align: 'center', maxWidth: statBoxWidth - 4 });
     }
   });
 
-  currentY += statBoxHeight + 8;
+  currentY += statBoxHeight + 10;
 
-  // 1. PROFESSIONAL SUMMARY
-  currentY = drawSectionHeader('Professional Summary', currentY);
+  // Professional Summary
+  drawSectionHeader('Professional Summary');
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
+  doc.setFontSize(9.5);
   doc.setTextColor(...colorDark);
   const summaryLines = doc.splitTextToSize(profile.summary, contentWidth);
   doc.text(summaryLines, margin, currentY);
-  currentY += summaryLines.length * 4.2 + 5;
+  currentY += summaryLines.length * 4.8 + 8;
 
-  // 2. CORE COMPETENCIES (Structured Grid)
-  currentY = drawSectionHeader('Core Competencies & Functional Matrix', currentY);
-
-  const competencyData = skills.map((s) => [
-    s.name,
-    `${s.proficiency}%`,
-    `${s.years} Yrs`,
-    s.highlight,
-  ]);
+  // Competencies
+  drawSectionHeader('Core Competencies & Functional Matrix');
 
   autoTable(doc, {
     startY: currentY,
     head: [['Competency Area', 'Mastery', 'Tenure', 'Key Scope & Deliverable Focus']],
-    body: competencyData,
+    body: skills.map((s) => [s.name, `${s.proficiency}%`, `${s.years} Yrs`, s.highlight]),
     theme: 'grid',
     margin: { left: margin, right: margin },
     headStyles: {
       fillColor: [...colorNavy],
       textColor: [255, 255, 255],
-      fontSize: 8,
+      fontSize: 9,
       fontStyle: 'bold',
-      halign: 'left',
-      cellPadding: 2,
+      cellPadding: 3,
     },
     columnStyles: {
-      0: { cellWidth: 42, fontStyle: 'bold', textColor: [...colorDark], fontSize: 7.5 },
-      1: { cellWidth: 16, halign: 'center', fontStyle: 'bold', textColor: [...colorBlue], fontSize: 7.5 },
-      2: { cellWidth: 16, halign: 'center', textColor: [...colorMuted], fontSize: 7.5 },
-      3: { cellWidth: 'auto', textColor: [...colorDark], fontSize: 7 },
+      0: { cellWidth: 44, fontStyle: 'bold', textColor: [...colorDark], fontSize: 8.5 },
+      1: { cellWidth: 18, halign: 'center', fontStyle: 'bold', textColor: [...colorBlue], fontSize: 8.5 },
+      2: { cellWidth: 18, halign: 'center', textColor: [...colorMuted], fontSize: 8.5 },
+      3: { cellWidth: 'auto', textColor: [...colorDark], fontSize: 8 },
     },
     styles: {
-      cellPadding: 2,
+      cellPadding: 3,
       overflow: 'linebreak',
       lineColor: [...colorLine],
-      lineWidth: 0.2,
+      lineWidth: 0.25,
+      minCellHeight: 8,
     },
     alternateRowStyles: {
       fillColor: [...colorLightBg],
@@ -200,229 +235,205 @@ export const generatePortfolioPDF = async ({
   });
 
   // @ts-expect-error - jsPDF autoTable mutates doc with lastAutoTable
-  currentY = doc.lastAutoTable.finalY + 6;
+  currentY = doc.lastAutoTable.finalY + 8;
 
-  // 3. KEY ACHIEVEMENTS (Summary Highlights)
-  if (profile.keyAchievements && profile.keyAchievements.length > 0) {
-    currentY = drawSectionHeader('Selected Key Achievements at Deloitte', currentY);
+  // Achievements
+  if (profile.keyAchievements?.length) {
+    drawSectionHeader('Selected Key Achievements at Deloitte');
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
+    doc.setFontSize(9);
     doc.setTextColor(...colorDark);
 
-    const topAchievements = profile.keyAchievements.slice(0, 6);
-    topAchievements.forEach((ach) => {
-      // Bullet dot
+    profile.keyAchievements.slice(0, 6).forEach((ach) => {
+      ensureSpace(18);
       doc.setFillColor(...colorGreen);
-      doc.circle(margin + 2, currentY - 1, 0.8, 'F');
-
-      const achLines = doc.splitTextToSize(ach, contentWidth - 6);
-      doc.text(achLines, margin + 5, currentY);
-      currentY += achLines.length * 3.8 + 1.5;
+      doc.circle(margin + 2.2, currentY - 1.1, 1, 'F');
+      const achLines = doc.splitTextToSize(ach, contentWidth - 8);
+      doc.text(achLines, margin + 6, currentY);
+      currentY += achLines.length * 4.4 + 2.5;
     });
   }
 
-  // -------------------------------------------------------------
-  // PAGE 2: PROFESSIONAL EXPERIENCE HISTORY (DELOITTE 7+ YEARS)
-  // -------------------------------------------------------------
+  // Experience
   doc.addPage();
   currentY = margin + 2;
-
-  currentY = drawSectionHeader('Professional Experience — Deloitte (7+ Years)', currentY);
+  drawSectionHeader('Professional Experience — Deloitte (7+ Years)');
 
   experiences.forEach((exp, idx) => {
-    // Check page break
-    if (currentY > pageHeight - 45) {
-      doc.addPage();
-      currentY = margin + 5;
-    }
+    ensureSpace(42);
 
-    // Role Title & Tenure
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9.5);
+    doc.setFontSize(11);
     doc.setTextColor(...colorNavy);
     doc.text(exp.role, margin, currentY);
 
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
+    doc.setFontSize(9);
     doc.setTextColor(...colorBlue);
     doc.text(`${exp.startDate} – ${exp.endDate}`, pageWidth - margin, currentY, { align: 'right' });
 
-    currentY += 4;
+    currentY += 5;
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
+    doc.setFontSize(9);
     doc.setTextColor(...colorMuted);
     doc.text(`${exp.company}  ·  ${exp.location}  ·  ${exp.department}`, margin, currentY);
+    currentY += 5.5;
 
-    currentY += 4;
-
-    // Description / Responsibilities (bullets)
-    doc.setFontSize(7.5);
+    doc.setFontSize(8.5);
     doc.setTextColor(...colorDark);
-
-    const bullets = exp.responsibilities.slice(0, 4);
-    bullets.forEach((bullet) => {
+    exp.responsibilities.slice(0, 4).forEach((bullet) => {
+      ensureSpace(16);
       doc.setFillColor(...colorNavy);
-      doc.circle(margin + 2, currentY - 1, 0.6, 'F');
-
-      const lines = doc.splitTextToSize(bullet, contentWidth - 6);
-      doc.text(lines, margin + 5, currentY);
-      currentY += lines.length * 3.4 + 1.2;
+      doc.circle(margin + 2.2, currentY - 1, 0.75, 'F');
+      const lines = doc.splitTextToSize(bullet, contentWidth - 8);
+      doc.text(lines, margin + 6, currentY);
+      currentY += lines.length * 4 + 2;
     });
 
-    // Tech / Tools Pill text
-    if (exp.technologies && exp.technologies.length > 0) {
+    if (exp.technologies?.length) {
       doc.setFont('helvetica', 'italic');
-      doc.setFontSize(6.8);
+      doc.setFontSize(7.5);
       doc.setTextColor(...colorMuted);
-      doc.text(`Key Frameworks & Tools: ${exp.technologies.join(', ')}`, margin + 5, currentY);
-      currentY += 4;
+      doc.text(`Key Frameworks & Tools: ${exp.technologies.join(', ')}`, margin + 6, currentY);
+      currentY += 5;
     }
 
-    // Divider between experiences
     if (idx < experiences.length - 1) {
       doc.setDrawColor(...colorLine);
-      doc.setLineWidth(0.2);
+      doc.setLineWidth(0.3);
       doc.line(margin, currentY, pageWidth - margin, currentY);
-      currentY += 4.5;
+      currentY += 6;
     }
   });
 
-  // -------------------------------------------------------------
-  // PAGE 3: ENTERPRISE PROJECTS & CASE STUDIES + EDUCATION & CERTS
-  // -------------------------------------------------------------
+  // Projects
   doc.addPage();
   currentY = margin + 2;
+  drawSectionHeader('Enterprise Projects & Case Study Blueprints');
 
-  currentY = drawSectionHeader('Enterprise Projects & Case Study Blueprints', currentY);
-
-  projects.forEach((proj, pIdx) => {
-    if (currentY > pageHeight - 55) {
-      doc.addPage();
-      currentY = margin + 5;
-    }
-
-    // Project Card Container
-    doc.setFillColor(...colorLightBg);
+  projects.forEach((proj) => {
+    ensureSpace(52);
     const cardTop = currentY;
-    
-    // Header line
+
+    doc.setFillColor(...colorLightBg);
+    // Placeholder fill; border drawn after measuring height
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9.5);
+    doc.setFontSize(10.5);
     doc.setTextColor(...colorNavy);
-    doc.text(proj.title, margin + 4, currentY + 5);
+    const titleLines = doc.splitTextToSize(proj.title, contentWidth - 8);
+    doc.text(titleLines, margin + 4, currentY + 6);
+    currentY += titleLines.length * 4.8 + 4;
 
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7.5);
+    doc.setFontSize(8);
     doc.setTextColor(...colorGreen);
-    doc.text(proj.deloitteRole, pageWidth - margin - 4, currentY + 5, { align: 'right' });
+    doc.text(proj.deloitteRole, margin + 4, currentY);
+    currentY += 5;
 
-    currentY += 9;
-
-    // Challenge & Solution text
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7.5);
+    doc.setFontSize(8.5);
     doc.setTextColor(...colorDark);
-    doc.text('Challenge: ', margin + 4, currentY);
+    doc.text('Challenge', margin + 4, currentY);
+    currentY += 4;
     doc.setFont('helvetica', 'normal');
-    const chLines = doc.splitTextToSize(proj.challenge, contentWidth - 28);
-    doc.text(chLines, margin + 22, currentY);
-    currentY += chLines.length * 3.4 + 2;
+    const chLines = doc.splitTextToSize(proj.challenge, contentWidth - 10);
+    doc.text(chLines, margin + 4, currentY);
+    currentY += chLines.length * 4 + 3;
 
     doc.setFont('helvetica', 'bold');
-    doc.text('Solution: ', margin + 4, currentY);
+    doc.text('Solution', margin + 4, currentY);
+    currentY += 4;
     doc.setFont('helvetica', 'normal');
-    const solLines = doc.splitTextToSize(proj.solution, contentWidth - 28);
-    doc.text(solLines, margin + 22, currentY);
-    currentY += solLines.length * 3.4 + 3;
+    const solLines = doc.splitTextToSize(proj.solution, contentWidth - 10);
+    doc.text(solLines, margin + 4, currentY);
+    currentY += solLines.length * 4 + 3.5;
 
-    // Metrics mini-row
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7.5);
+    doc.setFontSize(8.5);
     doc.setTextColor(...colorNavy);
-    const metricText = proj.outcomes.map((m) => `${m.label}: ${m.value}`).join('  |  ');
-    doc.text(`Key Outcomes: ${metricText}`, margin + 4, currentY);
+    const metricText = proj.outcomes.map((m) => `${m.label}: ${m.value}`).join('   ·   ');
+    const metricLines = doc.splitTextToSize(`Outcomes — ${metricText}`, contentWidth - 10);
+    doc.text(metricLines, margin + 4, currentY);
+    currentY += metricLines.length * 4 + 2.5;
 
-    currentY += 4;
     doc.setFont('helvetica', 'italic');
-    doc.setFontSize(7);
+    doc.setFontSize(7.5);
     doc.setTextColor(...colorMuted);
-    doc.text(`Technology Stack: ${proj.techStack.join(', ')}`, margin + 4, currentY);
+    const stackLines = doc.splitTextToSize(`Technology: ${proj.techStack.join(', ')}`, contentWidth - 10);
+    doc.text(stackLines, margin + 4, currentY);
+    currentY += stackLines.length * 3.6 + 4;
 
-    currentY += 4;
     const cardHeight = currentY - cardTop;
     doc.setDrawColor(...colorLine);
-    doc.roundedRect(margin, cardTop, contentWidth, cardHeight, 1.5, 1.5, 'S');
+    doc.setLineWidth(0.4);
+    doc.roundedRect(margin, cardTop, contentWidth, cardHeight, 2, 2, 'S');
+    doc.setFillColor(...colorCyan);
+    doc.roundedRect(margin, cardTop, 1.6, cardHeight, 0.5, 0.5, 'F');
 
-    currentY += 5;
+    currentY += 6;
   });
 
-  // EDUCATION & CERTIFICATIONS & LANGUAGES
-  if (currentY > pageHeight - 45) {
-    doc.addPage();
-    currentY = margin + 5;
-  }
+  // Certs / Education
+  ensureSpace(50);
+  drawSectionHeader('Certifications, Education & Languages');
 
-  currentY = drawSectionHeader('Certifications, Education & Languages', currentY);
-
-  // Left: Certifications
-  const colWidth = (contentWidth - 6) / 2;
+  const colWidth = (contentWidth - 8) / 2;
   const col1X = margin;
-  const col2X = margin + colWidth + 6;
+  const col2X = margin + colWidth + 8;
   const sectionTop = currentY;
 
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8.5);
+  doc.setFontSize(10);
   doc.setTextColor(...colorNavy);
   doc.text('Professional Certifications', col1X, currentY);
-  currentY += 4;
+  currentY += 5.5;
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
+  doc.setFontSize(8.5);
   doc.setTextColor(...colorDark);
   profile.certifications.forEach((cert) => {
     doc.setFillColor(...colorGreen);
-    doc.circle(col1X + 2, currentY - 1, 0.7, 'F');
-    doc.text(cert, col1X + 5, currentY);
-    currentY += 3.8;
+    doc.circle(col1X + 2, currentY - 1, 0.85, 'F');
+    const certLines = doc.splitTextToSize(cert, colWidth - 8);
+    doc.text(certLines, col1X + 5.5, currentY);
+    currentY += certLines.length * 4 + 1.5;
   });
 
-  // Right: Education & Languages
   let rightY = sectionTop;
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8.5);
+  doc.setFontSize(10);
   doc.setTextColor(...colorNavy);
-  doc.text('Education & Academic Background', col2X, rightY);
-  rightY += 4;
+  doc.text('Education', col2X, rightY);
+  rightY += 5.5;
 
-  if (profile.education && profile.education.length > 0) {
+  if (profile.education?.[0]) {
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7.5);
+    doc.setFontSize(8.5);
     doc.setTextColor(...colorDark);
-    doc.text(profile.education[0].degree, col2X, rightY);
-    rightY += 3.5;
+    const degLines = doc.splitTextToSize(profile.education[0].degree, colWidth);
+    doc.text(degLines, col2X, rightY);
+    rightY += degLines.length * 4 + 1.5;
 
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
+    doc.setFontSize(8);
     doc.setTextColor(...colorMuted);
     doc.text(`${profile.education[0].institution}  ·  ${profile.education[0].years}`, col2X, rightY);
-    rightY += 6;
+    rightY += 7;
   }
 
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8.5);
+  doc.setFontSize(10);
   doc.setTextColor(...colorNavy);
   doc.text('Languages', col2X, rightY);
-  rightY += 4;
-
+  rightY += 5;
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
+  doc.setFontSize(8.5);
   doc.setTextColor(...colorDark);
-  const langList = profile.languages ? profile.languages.join('  ·  ') : 'English, Hindi, Telugu';
-  doc.text(langList, col2X, rightY);
+  doc.text(profile.languages?.join('  ·  ') || 'English, Hindi, Telugu', col2X, rightY);
 
-  // -------------------------------------------------------------
-  // FOOTER (Applied to every page)
-  // -------------------------------------------------------------
+  currentY = Math.max(currentY, rightY) + 4;
+
+  // Footers
   const totalPages = doc.getNumberOfPages();
   const todayStr = new Date().toLocaleDateString('en-US', {
     month: 'long',
@@ -433,24 +444,23 @@ export const generatePortfolioPDF = async ({
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);
 
-    // Bottom hairline divider
     doc.setDrawColor(...colorLine);
-    doc.setLineWidth(0.3);
-    doc.line(margin, pageHeight - 10, pageWidth - margin, pageHeight - 10);
+    doc.setLineWidth(0.35);
+    doc.line(margin, pageHeight - 12, pageWidth - margin, pageHeight - 12);
 
-    // Left footnote: Deloitte Confidential
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
+    doc.setFontSize(7.5);
     doc.setTextColor(...colorMuted);
-    doc.text(`Deloitte Executive Report  ·  ${profile.name}  ·  Generated ${todayStr}`, margin, pageHeight - 6);
-
-    // Right footnote: Page X of Y with Deloitte green dot
-    doc.text(`Page ${i} of ${totalPages}`, pageWidth - margin - 4, pageHeight - 6, { align: 'right' });
+    doc.text(
+      `Deloitte Executive Report  ·  ${profile.name}  ·  Generated ${todayStr}`,
+      margin,
+      pageHeight - 7
+    );
+    doc.text(`Page ${i} of ${totalPages}`, pageWidth - margin - 4, pageHeight - 7, { align: 'right' });
     doc.setFillColor(...colorGreen);
-    doc.circle(pageWidth - margin - 1, pageHeight - 7, 0.9, 'F');
+    doc.circle(pageWidth - margin - 1, pageHeight - 8, 1, 'F');
   }
 
-  // Save the PDF file
   const sanitizedName = profile.name.replace(/\s+/g, '_');
   doc.save(`Deloitte_Executive_Report_${sanitizedName}.pdf`);
 };

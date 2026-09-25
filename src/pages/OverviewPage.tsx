@@ -12,8 +12,6 @@ interface OverviewPageProps {
   experiences: ExperienceItem[];
   projects: ProjectItem[];
   onNavigate: (page: PageId) => void;
-  onExportPDF: () => void;
-  isExportingPDF?: boolean;
 }
 
 export const OverviewPage: React.FC<OverviewPageProps> = ({
@@ -21,23 +19,21 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   experiences,
   projects,
   onNavigate,
-  onExportPDF,
-  isExportingPDF = false,
 }) => {
   const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
 
   return (
     <div className="space-y-16 pb-20 relative overflow-hidden">
-      {/* Background Ambient Refraction Orbs */}
-      <div className="absolute top-40 right-10 w-96 h-96 bg-[#86bc25]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-[650px] left-10 w-96 h-96 bg-[#00a3e0]/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Background Ambient Refraction Orbs — stronger so glass can frost them */}
+      <div className="absolute top-40 right-10 w-[28rem] h-[28rem] bg-[#86bc25]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-[650px] left-10 w-[28rem] h-[28rem] bg-[#00a3e0]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-[1100px] right-1/4 w-72 h-72 bg-[#00558f]/25 rounded-full blur-[100px] pointer-events-none" />
+      <div className="glass-atmosphere absolute inset-0 pointer-events-none opacity-50" />
 
       {/* Hero Section */}
       <HeroSection
         profile={profile}
         onNavigate={onNavigate}
-        onExportPDF={onExportPDF}
-        isExportingPDF={isExportingPDF}
       />
 
       {/* Clean Editorial Deloitte Practices Strip with Frosted Glass & Water Drop */}
@@ -61,15 +57,6 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               <span className="px-2.5 py-1 rounded-full water-pill">SABA Digital Curriculum</span>
               <span>·</span>
               <span className="px-2.5 py-1 rounded-full water-pill">Public Pricing Strategy</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={onExportPDF}
-                disabled={isExportingPDF}
-                className="text-[#00a3e0] hover:text-[#86bc25] font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
-              >
-                <span>Download Executive Dossier (PDF) ↓</span>
-              </button>
             </div>
           </div>
         </MotionReveal>

@@ -91,8 +91,6 @@ export default function App() {
             experiences={experiences}
             projects={projects}
             onNavigate={handleNavigate}
-            onExportPDF={handleExportPDF}
-            isExportingPDF={isExportingPDF}
           />
         )}
 
