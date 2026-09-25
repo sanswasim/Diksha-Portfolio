@@ -104,7 +104,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               <div className="p-6 sm:p-8 rounded-3xl frosted-glass space-y-5 text-left relative">
                 
                 {/* 3D Liquid Water Drop Badge */}
-                <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full water-drop flex items-center gap-1.5 text-[11px] font-bold text-white shadow-lg">
+                <div className="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full water-pill flex items-center gap-1.5 text-[11px] font-bold text-white shadow-lg">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#86bc25] shadow-[0_0_6px_#86bc25]" />
                   <span>Deloitte Proven Impact</span>
                 </div>

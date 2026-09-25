@@ -47,7 +47,7 @@ export const InteractiveScrollTracker: React.FC = () => {
         >
           {/* Water drop scroll percentage indicator */}
           <div className="w-8 h-8 rounded-full water-drop flex items-center justify-center font-mono text-[10px] font-bold text-white shadow-inner">
-            {scrollPercentage}%
+            <span className="relative z-[1] tabular-nums">{scrollPercentage}%</span>
           </div>
 
           <button

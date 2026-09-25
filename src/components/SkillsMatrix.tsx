@@ -131,7 +131,7 @@ export const SkillsMatrix: React.FC<SkillsMatrixProps> = ({ skills, certificatio
         {/* Enterprise Certifications & Credentials */}
         <MotionReveal delay={0.2} direction="up" distance={24}>
           <div className="mt-14 p-6 sm:p-8 rounded-3xl frosted-glass text-left relative">
-            <div className="absolute -top-3.5 right-8 px-3.5 py-1 rounded-full water-drop flex items-center gap-1.5 text-[11px] font-bold text-white shadow-lg">
+            <div className="absolute -top-3.5 right-8 px-3.5 py-1 rounded-full water-pill flex items-center gap-1.5 text-[11px] font-bold text-white shadow-lg">
               <span className="w-1.5 h-1.5 rounded-full bg-[#86bc25]" />
               <span>Verified Qualifications</span>
             </div>

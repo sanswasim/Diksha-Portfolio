@@ -36,7 +36,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ profile, onNavigate })
           <div className="p-6 sm:p-8 rounded-3xl frosted-glass flex flex-col md:flex-row md:items-end justify-between gap-6 relative">
             
             {/* Water Drop Badge */}
-            <div className="absolute -top-3.5 right-8 px-3.5 py-1 rounded-full water-drop flex items-center gap-1.5 text-[11px] font-bold text-white shadow-lg">
+            <div className="absolute -top-3.5 right-8 px-3.5 py-1 rounded-full water-pill flex items-center gap-1.5 text-[11px] font-bold text-white shadow-lg">
               <span className="w-1.5 h-1.5 rounded-full bg-[#86bc25]" />
               <span>Hyderabad Campus</span>
             </div>

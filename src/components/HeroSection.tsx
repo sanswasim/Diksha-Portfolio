@@ -17,11 +17,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   return (
     <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 bg-black overflow-hidden">
-      {/* Refraction field — gives frosted glass something vivid to blur */}
-      <div className="absolute top-1/4 right-0 w-[620px] h-[620px] bg-gradient-to-br from-[#86bc25]/25 via-[#00a3e0]/20 to-transparent blur-3xl pointer-events-none rounded-full" />
-      <div className="absolute bottom-10 left-0 w-[480px] h-[480px] bg-gradient-to-tr from-[#002c6c]/45 via-[#00a3e0]/15 to-transparent blur-3xl pointer-events-none rounded-full" />
-      <div className="absolute top-1/2 left-1/3 w-[320px] h-[320px] bg-[#86bc25]/10 blur-[100px] pointer-events-none rounded-full" />
-      <div className="glass-atmosphere absolute inset-0 pointer-events-none opacity-60" />
+      {/* Refraction field — soft enough not to glare through glass cards */}
+      <div className="absolute top-1/4 right-0 w-[620px] h-[620px] bg-gradient-to-br from-[#86bc25]/12 via-[#00a3e0]/10 to-transparent blur-3xl pointer-events-none rounded-full" />
+      <div className="absolute bottom-10 left-0 w-[480px] h-[480px] bg-gradient-to-tr from-[#002c6c]/30 via-[#00a3e0]/08 to-transparent blur-3xl pointer-events-none rounded-full" />
+      <div className="absolute top-1/2 left-1/3 w-[320px] h-[320px] bg-[#86bc25]/06 blur-[100px] pointer-events-none rounded-full" />
+      <div className="glass-atmosphere absolute inset-0 pointer-events-none opacity-35" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
@@ -144,7 +144,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <div className="p-5 sm:p-6 rounded-3xl frosted-glass relative overflow-hidden">
                   
                   {/* Floating 3D Water Droplet Badge */}
-                  <div className="absolute -top-3.5 -right-2 px-3.5 py-1 rounded-full water-drop flex items-center gap-1.5 text-[11px] font-bold text-white shadow-lg z-20">
+                  <div className="absolute -top-3.5 -right-2 px-3.5 py-1 rounded-full water-pill flex items-center gap-1.5 text-[11px] font-bold text-white shadow-lg z-20">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#86bc25] shadow-[0_0_6px_#86bc25]" />
                     <span>Deloitte Verified</span>
                   </div>
@@ -162,7 +162,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/15 pointer-events-none" />
 
                     {/* Overlaid Name & Practice badge — high-contrast plate */}
-                    <div className="absolute bottom-3 left-3 right-3 z-10 p-3.5 rounded-xl bg-black/85 backdrop-blur-xl border border-white/25 shadow-[0_12px_32px_rgba(0,0,0,0.65)] text-white">
+                    <div className="absolute bottom-3 left-3 right-3 z-10 p-3.5 rounded-xl bg-[#05070c] border border-white/25 shadow-[0_12px_32px_rgba(0,0,0,0.75)] text-white">
                       <div className="flex items-center justify-between gap-3">
                         <div className="min-w-0">
                           <div className="font-bold text-sm sm:text-base tracking-tight flex items-center gap-1.5 text-white">

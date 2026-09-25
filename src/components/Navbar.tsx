@@ -47,12 +47,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center gap-3 cursor-pointer group select-none"
         >
           <DeloitteLogo size="md" />
-          <span className="h-4 w-px bg-[#2a3449] hidden sm:block" />
+          <span className="h-4 w-px bg-white/25 hidden sm:block" />
           <div className="hidden sm:flex flex-col text-left">
-            <span className="text-xs font-bold tracking-tight text-white group-hover:text-[#00a3e0] transition-colors leading-none">
+            <span className="text-xs font-bold tracking-tight text-white leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
               {profile.name}
             </span>
-            <span className="text-[10px] text-[#9ca3af] font-medium leading-none mt-1">
+            <span className="text-[10px] text-white/70 font-medium leading-none mt-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
               Offices of US-India
             </span>
           </div>

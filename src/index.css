@@ -120,71 +120,57 @@
   background:
     linear-gradient(
       155deg,
-      rgba(255, 255, 255, 0.22) 0%,
-      rgba(255, 255, 255, 0.08) 28%,
-      rgba(255, 255, 255, 0.03) 55%,
-      rgba(8, 14, 26, 0.42) 100%
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(10, 14, 22, 0.88) 45%,
+      rgba(6, 10, 18, 0.94) 100%
     );
-  backdrop-filter: blur(40px) saturate(185%) brightness(1.08);
-  -webkit-backdrop-filter: blur(40px) saturate(185%) brightness(1.08);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
-    inset 0 -1px 0 0 rgba(255, 255, 255, 0.06),
-    inset 1px 0 0 0 rgba(255, 255, 255, 0.08),
-    0 1px 0 rgba(255, 255, 255, 0.06),
-    0 20px 50px rgba(0, 0, 0, 0.45),
-    0 4px 16px rgba(0, 0, 0, 0.3);
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.16),
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 4px 16px rgba(0, 0, 0, 0.35);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   isolation: isolate;
 }
 
+/* Thin top edge highlight only — no full-card glare over text */
 .frosted-glass::before {
   content: '';
   position: absolute;
-  inset: 0;
+  left: 12%;
+  right: 12%;
+  top: 0;
+  height: 1px;
   border-radius: inherit;
   pointer-events: none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.28) 0%,
-      rgba(255, 255, 255, 0.06) 18%,
-      transparent 42%
-    ),
-    radial-gradient(ellipse 80% 40% at 20% 0%, rgba(255, 255, 255, 0.18), transparent 55%);
-  opacity: 0.9;
-  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  z-index: 2;
 }
 
 .frosted-glass::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0.22;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-  z-index: -1;
+  display: none;
 }
 
 .frosted-glass:hover {
-  border-color: rgba(0, 163, 224, 0.55);
+  border-color: rgba(0, 163, 224, 0.45);
   background:
     linear-gradient(
       155deg,
-      rgba(255, 255, 255, 0.28) 0%,
-      rgba(255, 255, 255, 0.1) 28%,
-      rgba(0, 163, 224, 0.06) 55%,
-      rgba(8, 14, 26, 0.38) 100%
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(10, 14, 22, 0.9) 45%,
+      rgba(6, 10, 18, 0.95) 100%
     );
   box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.55),
-    inset 0 -1px 0 0 rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.22),
     0 24px 56px rgba(0, 0, 0, 0.55),
-    0 0 36px rgba(0, 163, 224, 0.22);
+    0 0 28px rgba(0, 163, 224, 0.14);
 }
 
 .frosted-glass-active {
@@ -210,124 +196,119 @@
 .frosted-glass-active::before {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  left: 12%;
+  right: 12%;
+  top: 0;
+  height: 1px;
   pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.22) 0%,
-    rgba(134, 188, 37, 0.1) 30%,
-    transparent 58%
-  );
-  z-index: -1;
+  background: linear-gradient(90deg, transparent, rgba(134, 188, 37, 0.55), transparent);
+  z-index: 2;
 }
 
 .frosted-glass-active::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0.2;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-  z-index: -1;
+  display: none;
 }
 
-/* Compact inset glass for overlays / chips */
+/* Compact inset glass for overlays / chips — readable, no glare bloom */
 .frosted-glass-inset {
   position: relative;
   background: linear-gradient(
     160deg,
-    rgba(255, 255, 255, 0.24) 0%,
-    rgba(255, 255, 255, 0.06) 45%,
-    rgba(0, 0, 0, 0.28) 100%
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(8, 12, 20, 0.82) 100%
   );
-  backdrop-filter: blur(24px) saturate(170%) brightness(1.06);
-  -webkit-backdrop-filter: blur(24px) saturate(170%) brightness(1.06);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
-    0 10px 28px rgba(0, 0, 0, 0.4);
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 8px 20px rgba(0, 0, 0, 0.35);
 }
 
-/* Nav / floating chrome glass */
+/* Nav / floating chrome glass — opaque enough that bright page content
+   cannot wash out identity text when scrolled under the bar */
 .frosted-glass-nav {
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(12, 16, 24, 0.55) 35%,
-    rgba(8, 11, 18, 0.62) 100%
+    rgba(8, 11, 18, 0.92) 0%,
+    rgba(5, 8, 14, 0.88) 100%
   );
-  backdrop-filter: blur(32px) saturate(200%) brightness(1.05);
-  -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    0 12px 40px rgba(0, 0, 0, 0.45);
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 12px 40px rgba(0, 0, 0, 0.55);
 }
 
-/* Realistic 3D Liquid Water Drop Effect */
+/* Liquid glass bead — shine stays behind label/icon content */
 .water-drop {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
   border-radius: 52% 48% 63% 37% / 42% 58% 42% 58%;
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(255, 255, 255, 0.18) 40%,
-    rgba(0, 163, 224, 0.22) 100%
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(12, 20, 34, 0.88) 48%,
+    rgba(0, 90, 140, 0.55) 100%
   );
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   box-shadow:
-    3px 8px 18px rgba(0, 0, 0, 0.65),
-    inset 2px 2px 6px rgba(255, 255, 255, 0.9),
-    inset -2px -3px 8px rgba(0, 0, 0, 0.4),
-    inset 0 0 12px rgba(134, 188, 37, 0.4);
+    2px 6px 14px rgba(0, 0, 0, 0.55),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.28),
+    inset -1px -2px 4px rgba(0, 0, 0, 0.35);
+  color: #ffffff;
   transition: all 0.3s ease;
 }
 
+/* Soft highlight bead — never covers text (behind content) */
 .water-drop::after {
   content: '';
   position: absolute;
-  top: 14%;
-  left: 18%;
-  width: 32%;
-  height: 24%;
+  top: 12%;
+  left: 16%;
+  width: 24%;
+  height: 16%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0) 72%);
-  filter: blur(0.4px);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  filter: blur(0.6px);
   transform: rotate(-28deg);
   pointer-events: none;
+  z-index: -1;
 }
 
 .water-drop:hover {
-  transform: scale(1.08) rotate(3deg);
+  transform: scale(1.06) rotate(2deg);
+  border-color: rgba(0, 163, 224, 0.45);
   box-shadow:
-    4px 10px 22px rgba(0, 0, 0, 0.75),
-    inset 2px 2px 7px rgba(255, 255, 255, 0.95),
-    inset -2px -3px 10px rgba(0, 0, 0, 0.5),
-    inset 0 0 14px rgba(0, 163, 224, 0.55);
+    3px 8px 18px rgba(0, 0, 0, 0.6),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.35),
+    inset -1px -2px 5px rgba(0, 0, 0, 0.4),
+    0 0 12px rgba(0, 163, 224, 0.2);
 }
 
-/* Water drop pill badge */
+/* Compact glass chip for labels — no specular bloom over text */
 .water-pill {
   position: relative;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.22) 0%,
-    rgba(255, 255, 255, 0.06) 100%
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(8, 14, 24, 0.72) 100%
   );
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow:
-    0 6px 18px rgba(0, 0, 0, 0.4),
-    inset 1px 1px 2px rgba(255, 255, 255, 0.6),
-    inset -1px -1px 4px rgba(0, 0, 0, 0.3);
+    0 4px 12px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: #e8edf5;
 }
 
 /* Smooth Interactive Scroll Indicator */
