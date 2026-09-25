@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Download, Sparkles, Building2, MapPin, CheckCircle2, Loader2, Layers, Award, Droplets } from 'lucide-react';
+import { ArrowRight, Download, Sparkles, Building2, MapPin, CheckCircle2, Loader2 } from 'lucide-react';
 import { ConsultantProfile } from '../types/portfolio';
 import { MotionReveal } from './MotionReveal';
 import { PageId } from './Navbar';
-import dikshaAvatar from '../assets/images/diksha_profile_enhanced_1790343528923.jpg';
+import dikshaAvatar from '../assets/images/diksha_profile_alpine_square.jpg';
 
 interface HeroSectionProps {
   profile: ConsultantProfile;
@@ -33,7 +33,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             
             {/* Deloitte Firm Tag */}
             <MotionReveal delay={0.05} direction="up" distance={16}>
-              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#0b0f17] border border-[#1e2636] text-xs font-medium text-slate-300">
+              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full frosted-glass-inset text-xs font-medium text-slate-300">
                 <span className="w-2 h-2 rounded-full bg-[#86bc25] shadow-[0_0_8px_rgba(134,188,37,0.9)] animate-pulse" />
                 <span className="font-semibold text-white">{profile.firm}</span>
                 <span className="text-[#4b5d78]">·</span>
@@ -129,7 +129,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     key={idx}
                     whileHover={{ y: -2 }}
                     transition={{ duration: 0.2 }}
-                    className="p-3.5 rounded-2xl bg-[#0b0f17] border border-[#1e2636] shadow-sm"
+                    className="p-3.5 rounded-2xl frosted-glass relative"
                   >
                     <div className="text-xl sm:text-2xl font-extrabold tracking-tight text-white font-mono tabular-nums">
                       {stat.value}
@@ -158,7 +158,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 className="relative w-full"
               >
                 {/* Outer Glassmorphic Frame with Frosted Glass & Water Drop */}
-                <div className="p-5 sm:p-6 rounded-3xl frosted-glass border border-white/15 shadow-[0_20px_45px_rgba(0,0,0,0.95)] relative">
+                <div className="p-5 sm:p-6 rounded-3xl frosted-glass relative overflow-hidden">
                   
                   {/* Floating 3D Water Droplet Badge */}
                   <div className="absolute -top-3.5 -right-2 px-3.5 py-1 rounded-full water-drop flex items-center gap-1.5 text-[11px] font-bold text-white shadow-lg z-20">
@@ -167,30 +167,31 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   </div>
 
                   {/* Image inset container */}
-                  <div className="relative aspect-square w-full rounded-2xl overflow-hidden p-1.5 bg-[#05070a]/80 border border-white/10">
+                  <div className="relative aspect-square w-full rounded-2xl overflow-hidden p-1.5 bg-white/5 border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]">
                     <img
                       src={profile.avatarUrl || dikshaAvatar}
                       alt={`${profile.name} - Assistant Manager at Deloitte`}
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover rounded-xl transition-transform duration-500 hover:scale-105"
+                      className="w-full h-full object-cover object-center rounded-xl transition-transform duration-500 hover:scale-105"
                     />
-                    {/* Subtle Deloitte gradient overlay */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/90 via-black/25 to-transparent pointer-events-none" />
+                    {/* Soft frost overlay that keeps alpine tones visible */}
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/80 via-black/15 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/15 pointer-events-none" />
 
                     {/* Overlaid Name & Practice badge in frosted glass */}
-                    <div className="absolute bottom-4 left-4 right-4 p-3 rounded-xl backdrop-blur-md bg-black/75 text-white border border-white/15 shadow-lg">
-                      <div className="flex items-center justify-between">
+                    <div className="absolute bottom-4 left-4 right-4 p-3 rounded-xl frosted-glass-inset text-white">
+                      <div className="flex items-center justify-between gap-2">
                         <div>
                           <div className="font-bold text-sm tracking-tight flex items-center gap-1.5">
                             <span>{profile.name}</span>
                             <span className="w-2 h-2 rounded-full bg-[#86bc25] shadow-[0_0_6px_#86bc25]" />
                           </div>
-                          <div className="text-[11px] text-[#9ca3af]">
+                          <div className="text-[11px] text-[#c4cad4]">
                             {profile.firm}
                           </div>
                         </div>
-                        <div className="text-right">
-                          <span className="text-[10px] uppercase font-mono tracking-wider bg-[#0076a8]/50 border border-[#00a3e0]/60 text-[#00a3e0] px-2 py-0.5 rounded-full">
+                        <div className="text-right shrink-0">
+                          <span className="text-[10px] uppercase font-mono tracking-wider bg-[#0076a8]/45 backdrop-blur-md border border-[#00a3e0]/55 text-[#7dd3f5] px-2 py-0.5 rounded-full">
                             Assistant Manager
                           </span>
                         </div>
@@ -199,7 +200,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   </div>
 
                   {/* Capability Details Pill in Frosted Glass */}
-                  <div className="mt-4 p-3.5 rounded-2xl frosted-glass border border-white/10 space-y-1.5 text-left">
+                  <div className="mt-4 p-3.5 rounded-2xl frosted-glass-inset space-y-1.5 text-left">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-semibold text-white flex items-center gap-1.5">
                         <Sparkles className="w-3.5 h-3.5 text-[#86bc25]" />

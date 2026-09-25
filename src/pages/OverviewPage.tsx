@@ -193,7 +193,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
-                  <span className="absolute bottom-2 left-2 text-[10px] font-semibold text-white/90 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/15">
+                  <span className="absolute bottom-2 left-2 text-[10px] font-semibold text-white/95 frosted-glass-inset px-2.5 py-0.5 rounded-full">
                     {proj.clientIndustry}
                   </span>
                 </div>

@@ -93,7 +93,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-[#9ca3af]">
-              <div className="p-4 sm:p-5 rounded-2xl bg-black/50 border border-white/10 space-y-2">
+              <div className="p-4 sm:p-5 rounded-2xl frosted-glass-inset space-y-2">
                 <h4 className="font-bold text-sm text-white flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#86bc25]" />
                   Information Architecture
@@ -103,7 +103,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                 </p>
               </div>
 
-              <div className="p-4 sm:p-5 rounded-2xl bg-black/50 border border-white/10 space-y-2">
+              <div className="p-4 sm:p-5 rounded-2xl frosted-glass-inset space-y-2">
                 <h4 className="font-bold text-sm text-white flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#00a3e0]" />
                   User Criteria & Roles
@@ -113,7 +113,7 @@ export const SkillsPage: React.FC<SkillsPageProps> = ({
                 </p>
               </div>
 
-              <div className="p-4 sm:p-5 rounded-2xl bg-black/50 border border-white/10 space-y-2">
+              <div className="p-4 sm:p-5 rounded-2xl frosted-glass-inset space-y-2">
                 <h4 className="font-bold text-sm text-white flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-white" />
                   Self-Service Enablement

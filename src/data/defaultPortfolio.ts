@@ -1,5 +1,5 @@
 import { ConsultantProfile, ExperienceItem, ProjectItem, SkillItem, OfficeLocation } from '../types/portfolio';
-import dikshaAvatar from '../assets/images/diksha_profile_enhanced_1790343528923.jpg';
+import dikshaAvatar from '../assets/images/diksha_profile_alpine_square.jpg';
 
 export const DEFAULT_PROFILE: ConsultantProfile = {
   name: "Diksha Agarwal",

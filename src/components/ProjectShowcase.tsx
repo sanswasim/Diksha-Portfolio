@@ -127,10 +127,10 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
 
                     {/* Overlaid Badges */}
                     <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
-                      <span className="text-[11px] font-semibold text-white bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/15">
+                      <span className="text-[11px] font-semibold text-white frosted-glass-inset px-3 py-1 rounded-full">
                         {project.clientIndustry}
                       </span>
-                      <span className="text-[11px] font-mono text-[#86bc25] bg-black/75 backdrop-blur-md px-2.5 py-1 rounded-full border border-[#86bc25]/30 flex items-center gap-1.5">
+                      <span className="text-[11px] font-mono text-[#86bc25] frosted-glass-inset px-2.5 py-1 rounded-full border border-[#86bc25]/35 flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#86bc25] shadow-[0_0_6px_#86bc25]" />
                         Deloitte Delivery
                       </span>

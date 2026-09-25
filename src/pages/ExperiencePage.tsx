@@ -99,7 +99,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {profile.education?.map((edu, idx) => (
-                <div key={idx} className="p-4 sm:p-5 rounded-2xl bg-black/50 border border-white/10 space-y-1.5 relative overflow-hidden">
+                <div key={idx} className="p-4 sm:p-5 rounded-2xl frosted-glass-inset space-y-1.5 relative overflow-hidden">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-[#86bc25] font-mono">
                       {edu.years}
@@ -117,7 +117,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({
                 </div>
               ))}
 
-              <div className="p-4 sm:p-5 rounded-2xl bg-black/50 border border-white/10 space-y-1.5">
+              <div className="p-4 sm:p-5 rounded-2xl frosted-glass-inset space-y-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-[#00a3e0]">
                     Communication

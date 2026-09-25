@@ -246,7 +246,7 @@ export const VerticalInteractiveTimeline: React.FC<VerticalInteractiveTimelinePr
                                 {exp.metrics.map((metric, mIdx) => (
                                   <div
                                     key={mIdx}
-                                    className="p-3.5 rounded-2xl bg-black/60 border border-white/10 shadow-inner text-center space-y-0.5"
+                                    className="p-3.5 rounded-2xl frosted-glass-inset text-center space-y-0.5"
                                   >
                                     <div className="text-xl font-extrabold font-mono text-[#00a3e0] tabular-nums">
                                       {metric.value}
