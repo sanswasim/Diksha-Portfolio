@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Exact Deloitte Brand Palette matching official site screenshot */
+    --bg-main: #000000;
+    --surface-main: #0b0f17;
+    --surface-raised: #111722;
+    --surface-border: #1e2636;
+    --text-primary: #ffffff;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+
+    --deloitte-green: #86bc25;
+    --deloitte-navy: #002c6c;
+    --deloitte-blue: #00558f;
+    --deloitte-cyan: #00a3e0;
+    --deloitte-dark-cyan: #0076a8;
+
+    /* Neumorphic shadow tokens in deep Deloitte Obsidian */
+    --neu-flat: 8px 8px 20px #000000, -6px -6px 16px #131b29;
+    --neu-flat-sm: 4px 4px 10px #000000, -3px -3px 8px #131b29;
+    --neu-flat-hover: 10px 10px 24px #000000, -8px -8px 20px #172133;
+    --neu-pressed: inset 4px 4px 8px #000000, inset -3px -3px 8px #131b29;
+    --neu-pressed-sm: inset 2px 2px 5px #000000, inset -2px -2px 5px #131b29;
+    --neu-accent: 0 0 20px rgba(134, 188, 37, 0.45);
+    --neu-blue-accent: 0 0 20px rgba(0, 163, 224, 0.35);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Neumorphic utility classes in Deloitte Black */
+.neu-raised {
+  box-shadow: var(--neu-flat);
+  background-color: var(--surface-main);
+  border: 1px solid var(--surface-border);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neu-raised-sm {
+  box-shadow: var(--neu-flat-sm);
+  background-color: var(--surface-main);
+  border: 1px solid var(--surface-border);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neu-raised:hover {
+  box-shadow: var(--neu-flat-hover);
+  border-color: rgba(0, 163, 224, 0.3);
+  transform: translateY(-2px);
+}
+
+.neu-pressed {
+  box-shadow: var(--neu-pressed);
+  background-color: #06090e;
+  border: 1px solid #161e2b;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neu-pressed-sm {
+  box-shadow: var(--neu-pressed-sm);
+  background-color: #06090e;
+  border: 1px solid #161e2b;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neu-button {
+  box-shadow: var(--neu-flat-sm);
+  background-color: var(--surface-main);
+  border: 1px solid var(--surface-border);
+  transition: all 0.18s ease;
+}
+
+.neu-button:active {
+  box-shadow: var(--neu-pressed-sm);
+  transform: translateY(1px);
+}
+
+.neu-input {
+  box-shadow: var(--neu-pressed);
+  background-color: #06090e;
+  border: 1px solid #1a2230;
+}
+
+.deloitte-green-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #86bc25;
+  box-shadow: 0 0 10px rgba(134, 188, 37, 0.9);
+}
+
+/* ========================================================
+   HIGH-END FROSTED GLASSMORPHISM & TACTILE WATER DROP SYSTEM
+   ======================================================== */
+
+.frosted-glass {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.015) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), 0 16px 36px 0 rgba(0, 0, 0, 0.7);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.frosted-glass:hover {
+  border-color: rgba(0, 163, 224, 0.35);
+  box-shadow: inset 0 1px 2px 0 rgba(255, 255, 255, 0.3), 0 20px 44px 0 rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 163, 224, 0.15);
+}
+
+.frosted-glass-active {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(134, 188, 37, 0.45);
+  box-shadow: inset 0 1px 2px 0 rgba(255, 255, 255, 0.35), 0 0 25px rgba(134, 188, 37, 0.25);
+}
+
+/* Realistic 3D Liquid Water Drop Effect */
+.water-drop {
+  position: relative;
+  border-radius: 52% 48% 63% 37% / 42% 58% 42% 58%;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 
+    3px 6px 14px rgba(0, 0, 0, 0.75),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.8),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.6),
+    inset 0 0 8px rgba(134, 188, 37, 0.4);
+  transition: all 0.3s ease;
+}
+
+.water-drop::after {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 20%;
+  width: 28%;
+  height: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 70%);
+  filter: blur(0.5px);
+  transform: rotate(-30deg);
+}
+
+.water-drop:hover {
+  transform: scale(1.08) rotate(3deg);
+  box-shadow: 
+    4px 8px 18px rgba(0, 0, 0, 0.85),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 8px rgba(0, 0, 0, 0.7),
+    inset 0 0 12px rgba(0, 163, 224, 0.5);
+}
+
+/* Water drop pill badge */
+.water-pill {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 4px 14px rgba(0, 0, 0, 0.5),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.5),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Smooth Interactive Scroll Indicator */
+.scroll-tracker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #86bc25 0%, #00a3e0 50%, #00558f 100%);
+  z-index: 60;
+  transform-origin: 0%;
+  box-shadow: 0 0 12px rgba(134, 188, 37, 0.8);
+}
+
