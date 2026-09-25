@@ -157,24 +157,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover object-center rounded-xl transition-transform duration-500 hover:scale-105"
                     />
-                    {/* Soft frost overlay that keeps alpine tones visible */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/80 via-black/15 to-transparent pointer-events-none" />
+                    {/* Stronger bottom scrim so the name plate always reads */}
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
                     <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/15 pointer-events-none" />
 
-                    {/* Overlaid Name & Practice badge in frosted glass */}
-                    <div className="absolute bottom-4 left-4 right-4 p-3 rounded-xl frosted-glass-inset text-white">
-                      <div className="flex items-center justify-between gap-2">
-                        <div>
-                          <div className="font-bold text-sm tracking-tight flex items-center gap-1.5">
-                            <span>{profile.name}</span>
-                            <span className="w-2 h-2 rounded-full bg-[#86bc25] shadow-[0_0_6px_#86bc25]" />
+                    {/* Overlaid Name & Practice badge — high-contrast plate */}
+                    <div className="absolute bottom-3 left-3 right-3 z-10 p-3.5 rounded-xl bg-black/85 backdrop-blur-xl border border-white/25 shadow-[0_12px_32px_rgba(0,0,0,0.65)] text-white">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="font-bold text-sm sm:text-base tracking-tight flex items-center gap-1.5 text-white">
+                            <span className="truncate">{profile.name}</span>
+                            <span className="w-2 h-2 rounded-full bg-[#86bc25] shadow-[0_0_6px_#86bc25] shrink-0" />
                           </div>
-                          <div className="text-[11px] text-[#c4cad4]">
+                          <div className="text-[11px] text-white/75 truncate mt-0.5">
                             {profile.firm}
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <span className="text-[10px] uppercase font-mono tracking-wider bg-[#0076a8]/45 backdrop-blur-md border border-[#00a3e0]/55 text-[#7dd3f5] px-2 py-0.5 rounded-full">
+                          <span className="inline-block text-[10px] uppercase font-mono tracking-wider bg-[#0076a8] border border-[#00a3e0] text-white px-2.5 py-1 rounded-full whitespace-nowrap">
                             Assistant Manager
                           </span>
                         </div>
