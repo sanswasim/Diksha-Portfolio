@@ -8,9 +8,12 @@ import { ArrowLeft, ArrowRight, Download, Sparkles } from 'lucide-react';
 interface ProjectsPageProps {
   profile: ConsultantProfile;
   projects: ProjectItem[];
-  onNavigate: (page: PageId) => void;
+  onNavigate: (page: PageId, projectId?: string | null) => void;
   onExportPDF: () => void;
   isExportingPDF?: boolean;
+  initialProjectId?: string | null;
+  onOpenProject?: (projectId: string) => void;
+  onCloseProject?: () => void;
 }
 
 export const ProjectsPage: React.FC<ProjectsPageProps> = ({
@@ -19,14 +22,15 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   onNavigate,
   onExportPDF,
   isExportingPDF = false,
+  initialProjectId = null,
+  onOpenProject,
+  onCloseProject,
 }) => {
   return (
     <div className="pt-28 pb-20 space-y-12 relative overflow-hidden">
-      {/* Background Refraction Orbs */}
       <div className="absolute top-20 right-10 w-96 h-96 bg-[#00a3e0]/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 left-4 w-96 h-96 bg-[#86bc25]/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Page Hero Header in Frosted Glass */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left relative z-10">
         <MotionReveal direction="up" distance={16}>
           <div className="flex items-center gap-2 text-xs font-semibold text-[#00a3e0] uppercase tracking-wider mb-3">
@@ -41,8 +45,6 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
           </div>
 
           <div className="p-6 sm:p-8 rounded-3xl frosted-glass flex flex-col md:flex-row md:items-end justify-between gap-6 relative">
-            
-            {/* Water Drop Badge */}
             <div className="absolute -top-3.5 right-8 px-3.5 py-1 rounded-full water-pill flex items-center gap-1.5 text-[11px] font-bold text-white shadow-lg">
               <span className="w-1.5 h-1.5 rounded-full bg-[#86bc25]" />
               <span>Deloitte Engagements</span>
@@ -73,16 +75,17 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
         </MotionReveal>
       </div>
 
-      {/* Main Project Showcase Component */}
       <div className="relative z-10">
         <ProjectShowcase
           projects={projects}
           onExportPDF={onExportPDF}
           isExportingPDF={isExportingPDF}
+          initialProjectId={initialProjectId}
+          onOpenProject={onOpenProject}
+          onCloseProject={onCloseProject}
         />
       </div>
 
-      {/* Navigation Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left pt-6 relative z-10">
         <div className="flex justify-between items-center border-t border-white/10 pt-6">
           <button

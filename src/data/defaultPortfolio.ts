@@ -313,9 +313,9 @@ export const DEFAULT_PROJECTS: ProjectItem[] = [
     challenge: "Managing public and private pricing reviews across engagement teams relied on disparate Excel calculators, causing review delays, potential charge code inconsistencies, and high turnaround times for Partners.",
     solution: "Led strategic direction for Public Pricing, authored comprehensive reference manuals from initial drafts to final guidance, trained cross-functional teams, assisted Partners with CAEA reviews, and partnered with IT to migrate tools to the NPA platform.",
     outcomes: [
-      { label: "Team Productivity Gain", value: "+15%", subtext: "Measured execution improvement" },
-      { label: "Tool Modernization", value: "NPA System", subtext: "Migrated from legacy Excel models" },
-      { label: "Executive Alignment", value: "Partners/Directors", subtext: "Streamlined CAEA & expedited reviews" }
+      { label: "Productivity Gain", value: "+15%", subtext: "Public Pricing initiative impact" },
+      { label: "Excel → NPA Migration", value: "100%", subtext: "Legacy pricing tools modernized" },
+      { label: "CAEA Alignment", value: "P/D+", subtext: "Partners & Directors expedited" }
     ],
     architecturePoints: [
       "End-to-end process guidance documentation streamlining Public and Private Pricing workflows.",

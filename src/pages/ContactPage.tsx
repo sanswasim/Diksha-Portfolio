@@ -8,7 +8,7 @@ import { DELOITTE_OFFICES } from '../data/defaultPortfolio';
 
 interface ContactPageProps {
   profile: ConsultantProfile;
-  onNavigate: (page: PageId) => void;
+  onNavigate: (page: PageId, projectId?: string | null) => void;
 }
 
 export const ContactPage: React.FC<ContactPageProps> = ({ profile, onNavigate }) => {

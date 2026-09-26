@@ -51,6 +51,7 @@ export const ContactAndMapsSection: React.FC<ContactAndMapsProps> = ({ profile }
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [reference, setReference] = useState<string>('');
+  const [usedMailto, setUsedMailto] = useState(false);
 
   const validate = (): boolean => {
     const errs: FormErrors = {};
@@ -92,6 +93,7 @@ export const ContactAndMapsSection: React.FC<ContactAndMapsProps> = ({ profile }
 
     setIsSubmitting(false);
     setReference(result.reference);
+    setUsedMailto(Boolean(result.mailtoOpened));
 
     if (result.ok) {
       setIsSubmitted(true);
@@ -111,6 +113,7 @@ export const ContactAndMapsSection: React.FC<ContactAndMapsProps> = ({ profile }
     setErrors({});
     setSubmitError(null);
     setReference('');
+    setUsedMailto(false);
     setIsSubmitted(false);
   };
 
@@ -154,9 +157,13 @@ export const ContactAndMapsSection: React.FC<ContactAndMapsProps> = ({ profile }
                       <CheckCircle className="w-7 h-7" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-white">Inquiry Received Successfully</h4>
+                      <h4 className="text-lg font-bold text-white">
+                        {usedMailto ? 'Email Draft Opened' : 'Inquiry Received Successfully'}
+                      </h4>
                       <p className="text-xs text-[#9ca3af] mt-1 max-w-sm mx-auto">
-                        Thank you, {formData.fullName}. Your request regarding {formData.inquiryType} has been dispatched to {profile.email}.
+                        {usedMailto
+                          ? `Thanks, ${formData.fullName}. Your mail app should open a pre-filled message to ${profile.email}. Send it to complete the request.`
+                          : `Thank you, ${formData.fullName}. Your request regarding ${formData.inquiryType} has been dispatched to ${profile.email}.`}
                       </p>
                     </div>
                     <div className="text-[11px] font-mono text-[#00a3e0] frosted-glass-inset py-1.5 px-3 rounded-lg inline-block">

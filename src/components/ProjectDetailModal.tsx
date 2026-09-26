@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { X, CheckCircle, Layers, ArrowRight } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { X, CheckCircle, Layers, ArrowRight, Link2, Check } from 'lucide-react';
 import { ProjectItem } from '../types/portfolio';
 import { CaseStudyImage } from './CaseStudyImage';
+import { buildHash } from '../utils/routing';
 
 interface ProjectDetailModalProps {
   project: ProjectItem | null;
@@ -9,6 +10,8 @@ interface ProjectDetailModalProps {
 }
 
 export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project, onClose }) => {
+  const [copied, setCopied] = useState(false);
+
   useEffect(() => {
     if (!project) return;
     const onKey = (e: KeyboardEvent) => {
@@ -23,6 +26,17 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
   }, [project, onClose]);
 
   if (!project) return null;
+
+  const copyShareLink = async () => {
+    const url = `${window.location.origin}/${buildHash('projects', project.id)}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      // ignore
+    }
+  };
 
   return (
     <div
@@ -69,15 +83,19 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {project.outcomes.map((metric, idx) => (
-            <div key={idx} className="p-4 rounded-2xl frosted-glass-inset text-center">
-              <div className="text-2xl font-extrabold font-mono text-[#00a3e0] tabular-nums">
+            <div key={idx} className="p-4 rounded-2xl frosted-glass-inset text-center min-w-0 space-y-1">
+              <div
+                className={`font-extrabold text-[#00a3e0] leading-tight break-words ${
+                  metric.value.length > 6 ? 'text-xl' : 'text-2xl font-mono tabular-nums'
+                }`}
+              >
                 {metric.value}
               </div>
-              <div className="text-xs font-semibold text-white mt-1">
+              <div className="text-xs font-semibold text-white leading-snug">
                 {metric.label}
               </div>
               {metric.subtext && (
-                <div className="text-[11px] text-[#9ca3af] mt-0.5">
+                <div className="text-[11px] text-[#9ca3af] leading-snug">
                   {metric.subtext}
                 </div>
               )}
@@ -136,17 +154,27 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project,
           </div>
         </div>
 
-        <div className="pt-4 flex items-center justify-between border-t border-white/10">
+        <div className="pt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/10">
           <span className="text-xs text-[#9ca3af]">
             Confidential Deloitte engagement summary · Outcomes anonymized
           </span>
-          <button
-            onClick={onClose}
-            className="px-5 py-2.5 rounded-full font-semibold text-xs text-white bg-[#0076a8] hover:bg-[#008fc9] border border-[#00a3e0] shadow-[0_0_15px_rgba(0,163,224,0.35)] flex items-center gap-2 cursor-pointer transition-all"
-          >
-            <span>Close Blueprint</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={copyShareLink}
+              className="px-4 py-2.5 rounded-full font-semibold text-xs text-white frosted-glass-inset hover:border-[#86bc25]/50 flex items-center gap-1.5 cursor-pointer transition-all"
+              title="Copy deep link to this case study"
+            >
+              {copied ? <Check className="w-3.5 h-3.5 text-[#86bc25]" /> : <Link2 className="w-3.5 h-3.5" />}
+              <span>{copied ? 'Link Copied' : 'Copy Link'}</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="px-5 py-2.5 rounded-full font-semibold text-xs text-white bg-[#0076a8] hover:bg-[#008fc9] border border-[#00a3e0] shadow-[0_0_15px_rgba(0,163,224,0.35)] flex items-center gap-2 cursor-pointer transition-all"
+            >
+              <span>Close Blueprint</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

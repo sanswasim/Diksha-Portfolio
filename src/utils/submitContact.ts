@@ -12,6 +12,7 @@ export interface ContactSubmitResult {
   provider?: string;
   error?: string;
   reference: string;
+  mailtoOpened?: boolean;
 }
 
 const makeReference = () =>
@@ -29,11 +30,31 @@ async function postJson(url: string, body: Record<string, unknown>) {
   return response;
 }
 
+function openMailtoFallback(payload: ContactFormPayload, reference: string) {
+  const subject = encodeURIComponent(
+    `Portfolio inquiry · ${payload.inquiryType} · ${payload.fullName}`
+  );
+  const body = encodeURIComponent(
+    [
+      `Reference: ${reference}`,
+      `Name: ${payload.fullName}`,
+      `Email: ${payload.email}`,
+      `Organization: ${payload.organization}`,
+      `Inquiry: ${payload.inquiryType}`,
+      '',
+      payload.message,
+    ].join('\n')
+  );
+  window.location.href = `mailto:${payload.recipientEmail}?subject=${subject}&body=${body}`;
+}
+
 /**
  * Multi-provider contact dispatch:
- * 1) Vercel `/api/contact` (Resend or Formspree server-side)
+ * 1) Vercel `/api/contact` (Resend, Formspree, or FormSubmit server-side)
  * 2) Client Formspree (`VITE_FORMSPREE_ID`)
- * 3) FormSubmit.co AJAX to recipient email (zero-config fallback)
+ * 3) Web3Forms (`VITE_WEB3FORMS_ACCESS_KEY`)
+ * 4) FormSubmit.co AJAX to recipient email
+ * 5) mailto: compose window as last-resort delivery path
  */
 export async function submitContactInquiry(
   payload: ContactFormPayload
@@ -58,7 +79,7 @@ export async function submitContactInquiry(
       return { ok: true, provider: data.provider || 'api', reference };
     }
   } catch {
-    // continue to next provider
+    // continue
   }
 
   // 2) Direct Formspree
@@ -74,7 +95,29 @@ export async function submitContactInquiry(
     }
   }
 
-  // 3) FormSubmit (works after one-time inbox confirmation)
+  // 3) Web3Forms
+  const web3Key = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY as string | undefined;
+  if (web3Key) {
+    try {
+      const res = await postJson('https://api.web3forms.com/submit', {
+        access_key: web3Key,
+        subject,
+        from_name: payload.fullName,
+        email: payload.email,
+        organization: payload.organization,
+        inquiryType: payload.inquiryType,
+        message: payload.message,
+        reference,
+      });
+      if (res.ok) {
+        return { ok: true, provider: 'web3forms', reference };
+      }
+    } catch {
+      // continue
+    }
+  }
+
+  // 4) FormSubmit AJAX
   try {
     const res = await postJson(
       `https://formsubmit.co/ajax/${encodeURIComponent(payload.recipientEmail)}`,
@@ -97,9 +140,12 @@ export async function submitContactInquiry(
     // fall through
   }
 
+  // 5) mailto fallback — always gives the visitor a working path
+  openMailtoFallback(payload, reference);
   return {
-    ok: false,
+    ok: true,
+    provider: 'mailto',
     reference,
-    error: 'Unable to deliver inquiry. Please email directly or configure Formspree/Resend.',
+    mailtoOpened: true,
   };
 }

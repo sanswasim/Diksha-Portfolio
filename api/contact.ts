@@ -10,6 +10,7 @@ export default async function handler(req: any, res: any) {
   const organization = String(body.organization || '').trim();
   const inquiryType = String(body.inquiryType || 'General Professional Discussion').trim();
   const message = String(body.message || '').trim();
+  const reference = String(body.reference || '').trim();
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   if (fullName.length < 2 || !emailOk || !organization || message.length < 10) {
@@ -19,14 +20,18 @@ export default async function handler(req: any, res: any) {
   const to = process.env.CONTACT_TO_EMAIL || 'dikshaagarwal798@gmail.com';
   const subject = `Portfolio inquiry · ${inquiryType} · ${fullName}`;
   const text = [
+    reference ? `Reference: ${reference}` : null,
     `Name: ${fullName}`,
     `Email: ${email}`,
     `Organization: ${organization}`,
     `Inquiry: ${inquiryType}`,
     '',
     message,
-  ].join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n');
 
+  // Provider 1: Resend
   if (process.env.RESEND_API_KEY) {
     const from = process.env.CONTACT_FROM_EMAIL || 'Portfolio <onboarding@resend.dev>';
     const response = await fetch('https://api.resend.com/emails', {
@@ -52,6 +57,7 @@ export default async function handler(req: any, res: any) {
     return res.status(200).json({ ok: true, provider: 'resend' });
   }
 
+  // Provider 2: Formspree
   if (process.env.FORMSPREE_ID) {
     const response = await fetch(`https://formspree.io/f/${process.env.FORMSPREE_ID}`, {
       method: 'POST',
@@ -65,6 +71,7 @@ export default async function handler(req: any, res: any) {
         organization,
         inquiryType,
         message,
+        reference,
         _subject: subject,
       }),
     });
@@ -76,9 +83,33 @@ export default async function handler(req: any, res: any) {
     return res.status(200).json({ ok: true, provider: 'formspree' });
   }
 
-  return res.status(503).json({
+  // Provider 3: FormSubmit (zero-config; recipient confirms once)
+  const formSubmitRes = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(to)}`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: fullName,
+      email,
+      organization,
+      inquiryType,
+      message,
+      reference,
+      _subject: subject,
+      _template: 'table',
+      _captcha: 'false',
+    }),
+  });
+
+  if (formSubmitRes.ok) {
+    return res.status(200).json({ ok: true, provider: 'formsubmit' });
+  }
+
+  return res.status(502).json({
     ok: false,
-    error: 'No server email provider configured',
-    hint: 'Set RESEND_API_KEY or FORMSPREE_ID on Vercel',
+    error: 'All server email providers failed',
+    hint: 'Set RESEND_API_KEY or FORMSPREE_ID, or confirm FormSubmit activation email',
   });
 }

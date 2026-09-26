@@ -8,7 +8,7 @@ import dikshaAvatar from '../assets/images/diksha_profile_alpine_square.jpg';
 
 interface HeroSectionProps {
   profile: ConsultantProfile;
-  onNavigate: (page: PageId) => void;
+  onNavigate: (page: PageId, projectId?: string | null) => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({

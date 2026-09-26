@@ -8,7 +8,7 @@ import { ArrowLeft, ArrowRight, Download, ShieldCheck, Sparkles, CheckCircle2, L
 interface SkillsPageProps {
   profile: ConsultantProfile;
   skills: SkillItem[];
-  onNavigate: (page: PageId) => void;
+  onNavigate: (page: PageId, projectId?: string | null) => void;
   onExportPDF: () => void;
   isExportingPDF?: boolean;
 }

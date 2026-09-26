@@ -8,7 +8,7 @@ import { GraduationCap, Download, ArrowLeft, ArrowRight, Sparkles, Droplets } fr
 interface ExperiencePageProps {
   profile: ConsultantProfile;
   experiences: ExperienceItem[];
-  onNavigate: (page: PageId) => void;
+  onNavigate: (page: PageId, projectId?: string | null) => void;
   onExportPDF: () => void;
   isExportingPDF?: boolean;
 }

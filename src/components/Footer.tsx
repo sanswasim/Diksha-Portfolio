@@ -6,7 +6,7 @@ import { PageId } from './Navbar';
 
 interface FooterProps {
   profile: ConsultantProfile;
-  onNavigate: (page: PageId) => void;
+  onNavigate: (page: PageId, projectId?: string | null) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ profile, onNavigate }) => {

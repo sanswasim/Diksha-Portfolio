@@ -8,7 +8,7 @@ export type PageId = 'overview' | 'experience' | 'skills' | 'projects' | 'contac
 interface NavbarProps {
   profile: ConsultantProfile;
   activePage: PageId;
-  onNavigate: (page: PageId) => void;
+  onNavigate: (page: PageId, projectId?: string | null) => void;
   onExportPDF: () => void;
   isExportingPDF?: boolean;
 }

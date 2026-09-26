@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, Download, Loader2 } from 'lucide-react';
 import { ProjectItem } from '../types/portfolio';
@@ -10,15 +10,40 @@ interface ProjectShowcaseProps {
   projects: ProjectItem[];
   onExportPDF?: () => void;
   isExportingPDF?: boolean;
+  initialProjectId?: string | null;
+  onOpenProject?: (projectId: string) => void;
+  onCloseProject?: () => void;
 }
 
 export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
   projects,
   onExportPDF,
   isExportingPDF = false,
+  initialProjectId = null,
+  onOpenProject,
+  onCloseProject,
 }) => {
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   const [activeModalProject, setActiveModalProject] = useState<ProjectItem | null>(null);
+
+  useEffect(() => {
+    if (!initialProjectId) {
+      setActiveModalProject(null);
+      return;
+    }
+    const match = projects.find((p) => p.id === initialProjectId) || null;
+    setActiveModalProject(match);
+  }, [initialProjectId, projects]);
+
+  const openProject = (project: ProjectItem) => {
+    setActiveModalProject(project);
+    onOpenProject?.(project.id);
+  };
+
+  const closeProject = () => {
+    setActiveModalProject(null);
+    onCloseProject?.();
+  };
 
   const filters = [
     { id: 'all', label: 'All Engagements' },
@@ -35,8 +60,6 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
   return (
     <section id="projects" className="py-12 relative text-left">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
         <MotionReveal direction="up" distance={20}>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 text-left">
             <div className="max-w-3xl">
@@ -70,7 +93,6 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
           </div>
         </MotionReveal>
 
-        {/* Filter Controls in Frosted Glass */}
         <MotionReveal delay={0.1} direction="up" distance={16}>
           <div className="flex items-center gap-2.5 overflow-x-auto pb-4 mb-10 scrollbar-none">
             {filters.map((filter) => {
@@ -92,7 +114,6 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
           </div>
         </MotionReveal>
 
-        {/* Projects Grid: Frosted Glass Bento Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, idx) => {
@@ -111,12 +132,11 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
                     isFeatured ? 'lg:col-span-12' : 'lg:col-span-6'
                   } p-6 sm:p-8 rounded-3xl frosted-glass text-left space-y-6 transition-all duration-300 group`}
                 >
-                  {/* Visual Image Container */}
                   <div
                     className={`relative ${
                       isFeatured ? 'aspect-[21/9] sm:aspect-[24/9]' : 'aspect-video'
                     } w-full rounded-2xl overflow-hidden border border-white/15 cursor-pointer shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]`}
-                    onClick={() => setActiveModalProject(project)}
+                    onClick={() => openProject(project)}
                   >
                     <CaseStudyImage
                       src={project.heroImage}
@@ -126,7 +146,6 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
                     />
                     <div className="absolute inset-0 z-[2] rounded-2xl bg-gradient-to-t from-black/75 via-black/15 to-transparent group-hover:opacity-70 transition-opacity pointer-events-none" />
 
-                    {/* Overlaid Badges */}
                     <div className="absolute top-4 left-4 right-4 z-[3] flex items-center justify-between pointer-events-none">
                       <span className="text-[11px] font-semibold text-white frosted-glass-inset px-3 py-1 rounded-full">
                         {project.clientIndustry}
@@ -144,14 +163,13 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
                     </div>
                   </div>
 
-                  {/* Metadata & Headline */}
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-xs text-[#00a3e0] font-semibold">
                       <span>{project.deloitteRole}</span>
                     </div>
 
                     <h3
-                      onClick={() => setActiveModalProject(project)}
+                      onClick={() => openProject(project)}
                       className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#00a3e0] transition-colors cursor-pointer"
                     >
                       {project.title}
@@ -162,24 +180,33 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
                     </p>
                   </div>
 
-                  {/* Measurable Proof Metrics Strip in Frosted Glass */}
                   <div className="grid grid-cols-3 gap-2.5 pt-2">
                     {project.outcomes.map((metric, mIdx) => (
                       <div
                         key={mIdx}
-                        className="p-3 rounded-2xl frosted-glass border border-white/10 text-center"
+                        className="p-3 rounded-2xl frosted-glass-inset text-center min-w-0 flex flex-col justify-center gap-0.5"
                       >
-                        <div className="text-base sm:text-lg font-bold font-mono text-[#00a3e0] tabular-nums">
+                        <div
+                          className={`font-bold text-[#00a3e0] leading-tight break-words ${
+                            metric.value.length > 6
+                              ? 'text-sm sm:text-base'
+                              : 'text-base sm:text-lg font-mono tabular-nums'
+                          }`}
+                        >
                           {metric.value}
                         </div>
-                        <div className="text-[10px] sm:text-[11px] font-medium text-slate-300 truncate mt-0.5">
+                        <div className="text-[10px] sm:text-[11px] font-medium text-slate-300 leading-snug">
                           {metric.label}
                         </div>
+                        {metric.subtext && (
+                          <div className="text-[9px] text-[#6b7280] leading-snug line-clamp-2 hidden sm:block">
+                            {metric.subtext}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
 
-                  {/* Tech Stack Chips & Action */}
                   <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-white/10">
                     <div className="flex flex-wrap gap-1.5">
                       {project.techStack.slice(0, 4).map((tech) => (
@@ -198,27 +225,21 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
                     </div>
 
                     <button
-                      onClick={() => setActiveModalProject(project)}
+                      onClick={() => openProject(project)}
                       className="text-xs font-semibold text-[#00a3e0] hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
                     >
                       <span>Inspect Blueprint</span>
                       <ArrowUpRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
-
                 </motion.div>
               );
             })}
           </AnimatePresence>
         </div>
-
       </div>
 
-      {/* Project Detail Modal */}
-      <ProjectDetailModal
-        project={activeModalProject}
-        onClose={() => setActiveModalProject(null)}
-      />
+      <ProjectDetailModal project={activeModalProject} onClose={closeProject} />
     </section>
   );
 };

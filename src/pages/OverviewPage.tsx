@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { HeroSection } from '../components/HeroSection';
 import { ConsultantProfile, ExperienceItem, ProjectItem } from '../types/portfolio';
 import { MotionReveal } from '../components/MotionReveal';
 import { PageId } from '../components/Navbar';
-import { ProjectDetailModal } from '../components/ProjectDetailModal';
 import { CaseStudyImage } from '../components/CaseStudyImage';
-import { ArrowRight, Award, CheckCircle2, ChevronRight, Layers, Users, TrendingUp, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, Award, CheckCircle2, Layers, Users, TrendingUp, ShieldCheck, Sparkles } from 'lucide-react';
 
 interface OverviewPageProps {
   profile: ConsultantProfile;
   experiences: ExperienceItem[];
   projects: ProjectItem[];
-  onNavigate: (page: PageId) => void;
+  onNavigate: (page: PageId, projectId?: string | null) => void;
 }
 
 export const OverviewPage: React.FC<OverviewPageProps> = ({
@@ -20,8 +19,6 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   projects,
   onNavigate,
 }) => {
-  const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
-
   return (
     <div className="space-y-16 pb-20 relative overflow-hidden">
       {/* Background Ambient Refraction Orbs — stronger so glass can frost them */}
@@ -174,7 +171,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
             <MotionReveal key={proj.id} delay={idx * 0.1} direction="up" distance={20}>
               <button
                 type="button"
-                onClick={() => setActiveProject(proj)}
+                onClick={() => onNavigate('projects', proj.id)}
                 className="w-full text-left p-5 rounded-3xl frosted-glass space-y-4 hover:-translate-y-1 transition-all cursor-pointer group"
               >
                 <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
@@ -276,11 +273,6 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
           </div>
         </div>
       </section>
-
-      <ProjectDetailModal
-        project={activeProject}
-        onClose={() => setActiveProject(null)}
-      />
     </div>
   );
 };
